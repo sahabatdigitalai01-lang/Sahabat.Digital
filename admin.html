@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Database Pantauan</title>
+<style>
+body{font-family:Arial;padding:20px;background:#fff0f5}
+table{width:100%;border-collapse:collapse} td,th{border:1px solid #ccc;padding:8px;background:white} .bahaya{background:#ffcccc}
+#kunci{max-width:300px;margin:100px auto;text-align:center;background:white;padding:20px;border-radius:15px}
+#kunci input{padding:10px;width:90%;border-radius:10px;border:1px solid #ccc}
+#kunci button{padding:10px 20px;background:#ff6b9d;color:white;border:none;border-radius:10px;margin-top:10px}
+</style>
+</head><body>
+<div id="kunci">
+  <h2>🔒 Khusus Admin</h2>
+  <p>Masukin password dulu</p>
+  <input type="password" id="inputPass" placeholder="Password...">
+  <br><button onclick="cekPass()">Buka Database</button>
+  <p id="pesanSalah" style="color:red"></p>
+</div>
+<div id="isiDatabase" style="display:none;">
+  <h2>📊 Database Curhatan</h2>
+  <button onclick="downloadCSV()">Download Excel / CSV</button>
+  <button onclick="if(confirm('Hapus semua?')){localStorage.removeItem('database_curhat'); location.reload()}">Hapus Semua</button>
+  <table><thead><tr><th>Waktu</th><th>Peran</th><th>Nama</th><th>Pesan</th><th>Balasan</th><th>Status</th></tr></thead><tbody id="isiTabel"></tbody></table>
+</div>
+<script>
+const PASSWORD_KAMU = "tiwi123";
+function cekPass(){
+  if(document.getElementById('inputPass').value === PASSWORD_KAMU){
+    document.getElementById('kunci').style.display='none';
+    document.getElementById('isiDatabase').style.display='block';
+    let data = JSON.parse(localStorage.getItem('database_curhat') || "[]");
+    document.getElementById('isiTabel').innerHTML = data.map(d=>`<tr class="${d.status.includes('BERBAHAYA')?'bahaya':''}"><td>${d.waktu}</td><td>${d.peran}</td><td>${d.nama||'-'}</td><td>${d.pesan}</td><td>${d.balasan}</td><td><b>${d.status}</b></td></tr>`).join('');
+  } else { document.getElementById('pesanSalah').innerText = "Password salah!"; }
+}
+function downloadCSV(){
+  let data = JSON.parse(localStorage.getItem('database_curhat') || "[]");
+  let csv = "Waktu,Peran,Nama,Pesan,Balasan,Status\n" + data.map(d=>`"${d.waktu}","${d.peran}","${d.nama}","${d.pesan}","${d.balasan}","${d.status}"`).join("\n");
+  let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv])); a.download='database-curhat.csv'; a.click();
+}
+</script></body></html>

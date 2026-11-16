@@ -1,0 +1,16 @@
+body{font-family:Arial;background:#fff0f5;margin:0;padding:15px}
+header{background:#ff6b9d;color:white;padding:15px;border-radius:15px;text-align:center}
+select{padding:8px;border-radius:10px;border:none;margin-top:10px;width:90%}
+.materi-grid{display:flex;gap:10px;margin:10px 0}
+.card{background:white;padding:15px;border-radius:12px;flex:1;text-align:center;cursor:pointer;box-shadow:0 2px 5px #ddd}
+#chatBox{height:350px;overflow-y:auto;background:white;border-radius:15px;padding:10px;margin:10px 0}
+.bubble-bot{background:#ffe4ec;padding:10px;border-radius:12px;margin:5px 0;max-width:85%}
+.bubble-user{background:#d1e7ff;padding:10px;border-radius:12px;margin:5px 0;margin-left:auto;max-width:85%;text-align:right}
+.input-area{display:flex;gap:8px}
+.input-area input{flex:1;padding:12px;border-radius:20px;border:1px solid #ccc}
+.input-area button{background:#ff6b9d;color:white;border:none;padding:12px 18px;border-radius:20px}
+.notif-popup{position:fixed;top:10px;left:10px;right:10px;background:white;border:2px solid #ff6b9d;border-radius:15px;padding:12px;z-index:99;display:flex;gap:10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:100}
+.modal-content{background:white;padding:20px;border-radius:15px;width:90%;max-width:500px;position:relative}
+.close-btn{float:right;background:#ff6b9d;color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:bold;cursor:pointer}
+.hidden{display:none !important}

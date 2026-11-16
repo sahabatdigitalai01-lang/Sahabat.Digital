@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teman Curhat - Anti Cyberbullying</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="notifPopup" class="notif-popup hidden">
+  <span>🔔</span>
+  <div>
+    <b id="notifTitle">Judul</b>
+    <p id="notifText">Isi</p>
+    <button onclick="bukaMateriDariNotif()">Baca Materi ➜</button>
+    <button onclick="tutupNotif()">Nanti</button>
+  </div>
+</div>
+
+<header>
+  <h1>💬 Sahabat Digital</h1>
+  <p>Kamu tidak sendiri. Cerita aja, aman & rahasia.</p>
+  <select id="pilihPeran">
+    <option value="">Kamu siapa? Pilih dulu...</option>
+    <option value="siswa">Saya Siswa SMA</option>
+    <option value="mahasiswa">Saya Mahasiswa</option>
+  </select>
+  <br>
+  <button id="btnNotif" class="btn-notif" onclick="aktifkanNotifManual()">🔔 Aktifkan Pengingat</button>
+</header>
+
+<section>
+  <h2>📚 Materi Hari Ini</h2>
+  <div class="materi-grid">
+    <div class="card" onclick="bukaMateri('cyberbullying')">📱 Apa itu Cyberbullying?</div>
+    <div class="card" onclick="bukaMateri('cara-hadapi')">🛡️ Cara Hadapi Bully Online</div>
+    <div class="card" onclick="bukaMateri('selflove')">💖 Self Love & Tenang</div>
+  </div>
+</section>
+
+<main id="chatBox"></main>
+
+<div class="input-area">
+  <input type="text" id="inputChat" placeholder="Tulis curhatan kamu di sini..." onkeypress="if(event.key==='Enter') kirimChat()">
+  <button onclick="kirimChat()">Kirim</button>
+</div>
+
+<div id="modalMateri" class="modal hidden">
+  <div class="modal-content">
+    <button onclick="tutupMateri()" class="close-btn">X TUTUP</button>
+    <h2 id="judulMateri"></h2>
+    <p id="isiMateri"></p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
