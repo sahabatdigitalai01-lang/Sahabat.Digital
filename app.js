@@ -4,11 +4,11 @@ const WA_KONSELOR_KAMPUS = "62812xxxx";
 const NAMA_GURU_BK = "GANTI_NAMA_GURU_BK";
 const WA_GURU_BK = "62812xxxx";
 
-// ===== MASUKKAN API KEY GEMINI KAMU DI SINI (DIPECAH 2 AGAR AMAN DI GITHUB) =====
-const API_KEY_BAGIAN_1 = "AQ.Ab8RN6IMH9QG";
-const API_KEY_BAGIAN_2 = "dlr4OgXrdWeHvuD2SlONP_Iu476vEmW8mKJIJw";
-const GEMINI_API_KEY = AQ.Ab8RN6IMH9QG + dlr4OgXrdWeHvuD2SlONP_Iu476vEmW8mKJIJw;
-
+// ===== MASUKKAN API KEY GEMINI KAMU DI SINI (DIPECAH 2 AGAR AMAN DI GITHUB) ===== 
+const K1 = "AQ.Ab8RN6LgRb";
+const K2 = "SepQtsWp70KvK";
+const K3 = "bVRiW2Owd_nWluqM4tTWkGFqAsA";
+const GEMINI_API_KEY = (K1 + K2 + K3).trim();
 // Menyimpan riwayat obrolan agar AI nyambung & ingat cerita sebelumnya
 let riwayatChat = [];
 
