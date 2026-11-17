@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>Database Pantauan</title>
+<html><head><meta charset="UTF-8"><title>Database Pantauan - Sahabat Digital</title>
 <style>
 body{font-family:Arial;padding:20px;background:#fff0f5}
 table{width:100%;border-collapse:collapse} td,th{border:1px solid #ccc;padding:8px;background:white} .bahaya{background:#ffcccc}
@@ -9,20 +9,20 @@ table{width:100%;border-collapse:collapse} td,th{border:1px solid #ccc;padding:8
 </style>
 </head><body>
 <div id="kunci">
-  <h2>🔒 Khusus Admin</h2>
+  <h2>🔒 Khusus Admin Sahabat Digital</h2>
   <p>Masukin password dulu</p>
   <input type="password" id="inputPass" placeholder="Password...">
   <br><button onclick="cekPass()">Buka Database</button>
   <p id="pesanSalah" style="color:red"></p>
 </div>
 <div id="isiDatabase" style="display:none;">
-  <h2>📊 Database Curhatan</h2>
+  <h2>📊 Database Curhatan - Sahabat Digital</h2>
   <button onclick="downloadCSV()">Download Excel / CSV</button>
   <button onclick="if(confirm('Hapus semua?')){localStorage.removeItem('database_curhat'); location.reload()}">Hapus Semua</button>
   <table><thead><tr><th>Waktu</th><th>Peran</th><th>Nama</th><th>Pesan</th><th>Balasan</th><th>Status</th></tr></thead><tbody id="isiTabel"></tbody></table>
 </div>
 <script>
-const PASSWORD_KAMU = "tiwi123";
+const PASSWORD_KAMU = "sahabatdigital";
 function cekPass(){
   if(document.getElementById('inputPass').value === PASSWORD_KAMU){
     document.getElementById('kunci').style.display='none';
@@ -34,6 +34,6 @@ function cekPass(){
 function downloadCSV(){
   let data = JSON.parse(localStorage.getItem('database_curhat') || "[]");
   let csv = "Waktu,Peran,Nama,Pesan,Balasan,Status\n" + data.map(d=>`"${d.waktu}","${d.peran}","${d.nama}","${d.pesan}","${d.balasan}","${d.status}"`).join("\n");
-  let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv])); a.download='database-curhat.csv'; a.click();
+  let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv])); a.download='database-sahabat-digital.csv'; a.click();
 }
 </script></body></html>
