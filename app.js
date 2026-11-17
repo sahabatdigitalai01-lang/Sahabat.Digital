@@ -20,7 +20,7 @@ function tambahBubble(teks, siapa) {
 
 const daftarNotif = [
   { judul: "📱 Cyberbullying itu nyata loh", text: "Kata-kata di chat bisa nyakitin sama kayak pukulan.", materi: "cyberbullying" },
-  { judul: "💖 Kamu berharga", text: "Hari ini ada yang bikin kamu down? Cerita yuk.", materi: "selflove" },
+  { judul: "🌿 Kamu berharga", text: "Hari ini ada yang bikin kamu down? Cerita yuk.", materi: "selflove" },
   { judul: "🛡️ Dibully di grup? Jangan diam!", text: "Screenshot, block, lapor. Kamu punya hak aman.", materi: "cara-hadapi" },
 ];
 
@@ -52,12 +52,13 @@ const dataMateri = {
     isi: "1. JANGAN dibalas marah. 2. SCREENSHOT bukti. 3. BLOCK & REPORT. 4. CERITA ke Guru BK / Konselor. 5. Istirahat dari sosmed 1-2 hari. Kamu berhak aman."
   },
   "selflove": {
-    judul: "💖 Self Love & Tenang",
+    judul: "🌿 Self Love & Tenang",
     isi: "Tarik napas 4 detik, tahan 7 detik, buang 8 detik. Ulangi 3x. Minum air, jauhkan HP 10 menit, dengerin lagu yang kamu suka."
   }
 };
 
 function bukaMateri(k) {
+  if (!dataMateri[k]) return;
   document.getElementById('judulMateri').innerText = dataMateri[k].judul;
   document.getElementById('isiMateri').innerText = dataMateri[k].isi;
   document.getElementById('modalMateri').classList.remove('hidden');
@@ -130,12 +131,12 @@ function buatBalasan(teks) {
     n = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
     if (n.length >= 2) {
       namaUser = n;
-      return `Hai ${n}! Seneng kenal kamu 💖 Oke ${n}, ceritain aja bebas, apa yang lagi ada di pikiran kamu sekarang?`;
+      return `Hai ${n}! Seneng kenal kamu ✨ Oke ${n}, ceritain aja bebas, apa yang lagi ada di pikiran kamu sekarang?`;
     }
   }
 
   if ((t === "halo" || t === "hai" || t === "hi" || t.includes("halo")) && chatKe <= 2 && !namaUser) {
-    return `Haiii! Selamat datang 💖 Aku Teman Curhat. Sebelum cerita, boleh kenalan dulu gak? Namamu siapa?`;
+    return `Haiii! Selamat datang ✨ Aku Sahabat Digital. Sebelum cerita, boleh kenalan dulu gak? Namamu siapa?`;
   }
 
   if (teks.length <= 12) {
@@ -199,130 +200,80 @@ function buatBalasan(teks) {
   return lanjut[Math.floor(Math.random() * lanjut.length)];
 }
 
-tambahBubble("Hai! Aku Sahabat Digital 💖 Kenalan dulu yuk, namamu siapa? Cerita aja bebas, apa aja boleh, aku dengerin.", "bot");
+tambahBubble("Hai! Aku Sahabat Digital ✨ Kenalan dulu yuk, namamu siapa? Cerita aja bebas, apa aja boleh, aku dengerin.", "bot");
 
-// ===== NOTIF DI LUAR WEB (MENDUKUNG LAYAR HP) =====
-let swRegistration = null;
-
-// Daftarkan Service Worker agar notifikasi bisa tampil di layar HP
+// ===== NOTIF DI LUAR WEB - SAHABAT DIGITAL (VIA SERVICE WORKER) =====
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js')
-    .then(reg => {
-      swRegistration = reg;
-    })
-    .catch(err => console.log('SW gagal:', err));
+  navigator.serviceWorker.register('sw.js')
+    .then(reg => console.log('Service Worker Sahabat Digital siap:', reg.scope))
+    .catch(err => console.error('Gagal daftar SW:', err));
 
-  // Jika notif diklik saat web masih ada di background HP, buka materinya
-  navigator.serviceWorker.addEventListener('message', event => {
-    if (event.data && event.data.type === 'BUKA_MATERI' && event.data.materi) {
+  // Tangkap sinyal saat notifikasi dari sw.js diklik
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'BUKA_MATERI') {
       bukaMateri(event.data.materi);
     }
   });
 }
 
-// Jika user masuk lewat klik notif saat web sempat tertutup, buka materi otomatis
-window.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const materiDariNotif = params.get('materi');
-  if (materiDariNotif && dataMateri[materiDariNotif]) {
-    bukaMateri(materiDariNotif);
-  }
-});
-
-// Sembunyikan tombol pengingat jika user sudah pernah mengizinkan
-const btnNotif = document.getElementById('btnNotif');
-if ("Notification" in window && Notification.permission === "granted" && btnNotif) {
-  btnNotif.style.display = "none";
+// Buka materi otomatis jika web dibuka lewat klik notifikasi (?materi=...)
+const urlParams = new URLSearchParams(window.location.search);
+const materiDariNotif = urlParams.get('materi');
+if (materiDariNotif) {
+  bukaMateri(materiDariNotif);
 }
 
-// Fungsi saat tombol "🔔 Aktifkan Pengingat" diklik oleh user
-function aktifkanNotifManual() {
-  if (!("Notification" in window)) {
-    alert("Browser ini belum mendukung fitur notifikasi.");
-    return;
+function mintaIzinNotif() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "default") {
+    Notification.requestPermission().then(izin => {
+      if (izin === "granted") {
+        kirimNotifViaSW(
+          "💬 Sahabat Digital aktif!",
+          "Nanti kalo kamu sedih atau butuh teman cerita, aku bakal ngingetin kamu ya.",
+          "selflove"
+        );
+      }
+    });
   }
+}
 
-  if (Notification.permission === "denied") {
-    alert("Izin notifikasi diblokir browser. Aktifkan lewat ikon pengaturan di sebelah alamat web di atas.");
-    return;
-  }
+document.addEventListener("click", mintaIzinNotif, { once: true });
 
-  Notification.requestPermission().then(izin => {
-    if (izin === "granted") {
-      if (btnNotif) btnNotif.style.display = "none";
-      kirimNotifLuar(
-        "💬 Sahabat Digital aktif!",
-        "Nanti kalo kamu sedih atau butuh teman cerita, aku bakal ngingetin kamu ya.",
-        "selflove",
-        true
-      );
-    }
+function kirimNotifViaSW(judul, isi, materiKlik) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+
+  navigator.serviceWorker.ready.then(registration => {
+    registration.showNotification(judul, {
+      body: isi,
+      icon: "https://cdn-icons-png.flaticon.com/512/2343/2343697.png",
+      tag: "sahabat-digital",
+      data: { materi: materiKlik }
+    });
   });
 }
 
-function kirimNotifLuar(judul, isi, materiKlik, paksaTampil = false) {
-  if (!("Notification" in window)) return;
-  if (Notification.permission !== "granted") return;
-  // Kalo webnya lagi dibuka & dilihat user, jangan kirim notif luar (kecuali tes pertama kali)
-  if (!document.hidden && !paksaTampil) return;
-
-  const opsiNotif = {
-    body: isi,
-    icon: "https://cdn-icons-png.flaticon.com/512/2343/2343697.png",
-    badge: "https://cdn-icons-png.flaticon.com/512/2343/2343697.png",
-    tag: "teman-curhat",
-    renotify: true,
-    vibrate: [200, 100, 200],
-    data: { materi: materiKlik }
-  };
-
-  // Kirim lewat Service Worker agar muncul di layar kunci & bar notifikasi HP
-  if (swRegistration && swRegistration.showNotification) {
-    swRegistration.showNotification(judul, opsiNotif);
-  } else if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(reg => {
-      reg.showNotification(judul, opsiNotif);
-    });
-  } else {
-    let notif = new Notification(judul, opsiNotif);
-    notif.onclick = function() {
-      window.focus();
-      if (materiKlik) bukaMateri(materiKlik);
-      notif.close();
-    };
-  }
-}
-
-// Jadwal notif pengingat - biar user balik lagi
-const jadwalNotifLuar = [
-  { menit: 1, judul: "📱 Cyberbullying itu nyata loh", isi: "Kata-kata di chat bisa nyakitin sama kayak pukulan. Yuk baca materinya.", materi: "cyberbullying" },
-  { menit: 60, judul: "💖 Kamu berharga", isi: "Udah sejam nih, gimana perasaanmu sekarang? Cerita yuk, aku dengerin.", materi: "selflove" },
-  { menit: 180, judul: "🛡️ Dibully di grup? Jangan diam!", isi: "Inget ya, screenshot, block, lapor. Kamu punya hak aman.", materi: "cara-hadapi" },
-];
-
-jadwalNotifLuar.forEach(j => {
-  setTimeout(() => {
-    kirimNotifLuar(j.judul, j.isi, j.materi);
-  }, j.menit * 60 * 1000);
-});
-
-// Kalo user ninggalin web / pindah aplikasi / tekan Home HP, ingetin 10 detik kemudian
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     setTimeout(() => {
-      if (document.hidden) {
-        kirimNotifLuar("💬 Teman Curhat kangen kamu!", "Eh jangan pergi dulu, kalo ada yang bikin kamu down, cerita ke aku ya.", "selflove");
-      }
+      kirimNotifViaSW(
+        "💬 Sahabat Digital kangen kamu!",
+        "Eh jangan pergi dulu, kalo ada yang bikin kamu down, cerita ke aku ya.",
+        "selflove"
+      );
     }, 10000);
   }
 });
 
-// Kalo user abis curhat terus diem 2 menit, ingetin lagi
 let timerDiem;
 function resetTimerDiem() {
   clearTimeout(timerDiem);
   timerDiem = setTimeout(() => {
-    kirimNotifLuar("💖 Sahabat Digital Masih di sini kok", "Kamu tadi cerita soal itu, gimana sekarang? Udah agak lega belum?", "selflove");
+    kirimNotifViaSW(
+      "🌿 Sahabat Digital masih di sini",
+      "Kamu tadi cerita soal itu, gimana sekarang? Udah agak lega belum?",
+      "selflove"
+    );
   }, 2 * 60 * 1000);
 }
 
