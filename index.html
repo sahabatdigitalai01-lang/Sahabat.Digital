@@ -73,10 +73,6 @@
 </div>
 
 <script>
-// Ganti dengan API Key Google AI Studio (format: AIzaSy...) saat pengujian lokal
-const GEMINI_KEY = "GANTI_DENGAN_API_KEY_AIzaSy";
-// =======================================================
-
 const HOTLINE_KAMU = "GANTI_NOMOR_HOTLINE";
 const NAMA_KONSELOR_KAMPUS = "Konselor Kampus";
 const WA_KONSELOR_KAMPUS = "62812xxxx";
@@ -84,54 +80,146 @@ const NAMA_GURU_BK = "Guru BK";
 const WA_GURU_BK = "62812xxxx";
 
 let namaUser = "";
-let riwayatChat = [];
+let chatKe = 0;
+let omonganTerakhir = "";
+let omonganSebelumnya = "";
+let sudahTanyaKapan = false;
+let sudahTanyaTerberat = false;
+let sudahTanyaMauApa = false;
 
 function tambahBubble(teks, siapa) {
   let box = document.getElementById('chatBox');
-  box.innerHTML += `<div class="${siapa === "bot" ? "bubble-bot" : "bubble-user"}">${teks}</div>`; box.scrollTop = box.scrollHeight; }  function simpanKeDatabase(pesan, balasan, status) { let data = JSON.parse(localStorage.getItem('database_curhat') \vert{}\vert{} "[]"); data.push({ waktu: new Date().toLocaleString('id-ID'), peran: document.getElementById('pilihPeran').value \vert{}\vert{} "-", nama: namaUser, pesan, balasan, status }); localStorage.setItem('database_curhat', JSON.stringify(data)); }  const daftarNotif = [ { judul: "📱 Cyberbullying itu nyata loh", text: "Kata-kata di chat bisa nyakitin sama kayak pukulan.", materi: "cyberbullying" }, { judul: "💖 Kamu berharga", text: "Hari ini ada yang bikin kamu down? Cerita yuk.", materi: "selflove" }, { judul: "🛡️ Dibully di grup? Jangan diam!", text: "Screenshot, block, lapor. Kamu punya hak aman.", materi: "cara-hadapi" }, ];  let notifTerakhir = ""; function munculNotif() { let acak = daftarNotif[Math.floor(Math.random() * daftarNotif.length)]; notifTerakhir = acak.materi; document.getElementById('notifTitle').innerText = acak.judul; document.getElementById('notifText').innerText = acak.text; document.getElementById('notifPopup').classList.remove('hidden'); } setTimeout(munculNotif, 4000); function tutupNotif() { document.getElementById('notifPopup').classList.add('hidden'); } function bukaMateriDariNotif() { tutupNotif(); bukaMateri(notifTerakhir); }  const dataMateri = { "cyberbullying": { judul: "📱 Apa itu Cyberbullying?", isi: "Cyberbullying adalah perundungan lewat HP/internet: dihina di komentar, disebar foto aib, dikucilkan dari grup, diancam lewat DM. Ini BUKAN bercanda. Langkah pertama: jangan balas emosi, screenshot bukti, block pelaku, cerita ke orang dewasa yang kamu percaya." }, "cara-hadapi": { judul: "🛡️ Cara Hadapi Bully Online", isi: "1. JANGAN dibalas marah. 2. SCREENSHOT bukti. 3. BLOCK & REPORT. 4. CERITA ke Guru BK / Konselor. 5. Istirahat dari sosmed 1-2 hari. Kamu berhak aman." }, "selflove": { judul: "💖 Self Love & Tenang", isi: "Tarik napas 4 detik, tahan 7 detik, buang 8 detik. Ulangi 3x. Minum air, jauhkan HP 10 menit, dengerin lagu yang kamu suka." } };  function bukaMateri(k) { document.getElementById('judulMateri').innerText = dataMateri[k].judul; document.getElementById('isiMateri').innerText = dataMateri[k].isi; document.getElementById('modalMateri').classList.remove('hidden'); } function tutupMateri() { document.getElementById('modalMateri').classList.add('hidden'); }  const kataBahaya = ["bunuh diri", "pengen mati", "mau mati", "lukai diri", "self harm", "cutting", "gak mau hidup", "pengen hilang", "mau ngakhiri"]; function cekBahaya(t) { return kataBahaya.some(k => t.toLowerCase().includes(k)); }  async function kirimChat() { let input = document.getElementById('inputChat'); let teks = input.value.trim(); if (!teks) return; tambahBubble(teks, "user"); input.value = ""; resetTimerDiem();  if (cekBahaya(teks)) { let peran = document.getElementById('pilihPeran').value; let nama = namaUser \vert{}\vert{} "Kamu"; let pesan = peran === "mahasiswa" ? `🚨 ${nama}, aku khawatir banget sama kamu. Kamu gak sendiri ya. Yuk langsung ke konselor kampus: ${NAMA_KONSELOR_KAMPUS} - <a href="https://wa.me/${WA_KONSELOR_KAMPUS}" target="_blank">Chat Konselor</a> / Hotline: ${HOTLINE_KAMU}` : peran === "siswa" ? `🚨 ${nama}, aku khawatir banget sama kamu. Yuk langsung ke Guru BK: ${NAMA_GURU_BK} - <a href="https://wa.me/${WA_GURU_BK}" target="_blank">Chat Guru BK</a> / Hotline: ${HOTLINE_KAMU}`
+  box.innerHTML += `<div class="${siapa === "bot" ? "bubble-bot" : "bubble-user"}">${teks}</div>`;
+  box.scrollTop = box.scrollHeight;
+}
+
+function simpanKeDatabase(pesan, balasan, status) {
+  let data = JSON.parse(localStorage.getItem('database_curhat') || "[]");
+  data.push({
+    waktu: new Date().toLocaleString('id-ID'),
+    peran: document.getElementById('pilihPeran').value || "-",
+    nama: namaUser,
+    pesan,
+    balasan,
+    status
+  });
+  localStorage.setItem('database_curhat', JSON.stringify(data));
+}
+
+const daftarNotif = [
+  { judul: "📱 Cyberbullying itu nyata loh", text: "Kata-kata di chat bisa nyakitin sama kayak pukulan.", materi: "cyberbullying" },
+  { judul: "💖 Kamu berharga", text: "Hari ini ada yang bikin kamu down? Cerita yuk.", materi: "selflove" },
+  { judul: "🛡️ Dibully di grup? Jangan diam!", text: "Screenshot, block, lapor. Kamu punya hak aman.", materi: "cara-hadapi" },
+];
+
+let notifTerakhir = "";
+function munculNotif() {
+  let acak = daftarNotif[Math.floor(Math.random() * daftarNotif.length)];
+  notifTerakhir = acak.materi;
+  document.getElementById('notifTitle').innerText = acak.judul;
+  document.getElementById('notifText').innerText = acak.text;
+  document.getElementById('notifPopup').classList.remove('hidden');
+}
+setTimeout(munculNotif, 4000);
+function tutupNotif() { document.getElementById('notifPopup').classList.add('hidden'); }
+function bukaMateriDariNotif() { tutupNotif(); bukaMateri(notifTerakhir); }
+
+const dataMateri = {
+  "cyberbullying": { judul: "📱 Apa itu Cyberbullying?", isi: "Cyberbullying adalah perundungan lewat HP/internet: dihina di komentar, disebar foto aib, dikucilkan dari grup, diancam lewat DM. Ini BUKAN bercanda. Langkah pertama: jangan balas emosi, screenshot bukti, block pelaku, cerita ke orang dewasa yang kamu percaya." },
+  "cara-hadapi": { judul: "🛡️ Cara Hadapi Bully Online", isi: "1. JANGAN dibalas marah. 2. SCREENSHOT bukti. 3. BLOCK & REPORT. 4. CERITA ke Guru BK / Konselor. 5. Istirahat dari sosmed 1-2 hari. Kamu berhak aman." },
+  "selflove": { judul: "💖 Self Love & Tenang", isi: "Tarik napas 4 detik, tahan 7 detik, buang 8 detik. Ulangi 3x. Minum air, jauhkan HP 10 menit, dengerin lagu yang kamu suka." }
+};
+
+function bukaMateri(k) {
+  document.getElementById('judulMateri').innerText = dataMateri[k].judul;
+  document.getElementById('isiMateri').innerText = dataMateri[k].isi;
+  document.getElementById('modalMateri').classList.remove('hidden');
+}
+function tutupMateri() { document.getElementById('modalMateri').classList.add('hidden'); }
+
+const kataBahaya = ["bunuh diri", "pengen mati", "mau mati", "lukai diri", "self harm", "cutting", "gak mau hidup", "pengen hilang", "mau ngakhiri"];
+function cekBahaya(t) { return kataBahaya.some(k => t.toLowerCase().includes(k)); }
+
+function kirimChat() {
+  let input = document.getElementById('inputChat');
+  let teks = input.value.trim();
+  if (!teks) return;
+  tambahBubble(teks, "user");
+  input.value = "";
+  chatKe++;
+  omonganSebelumnya = omonganTerakhir;
+  omonganTerakhir = teks;
+  resetTimerDiem();
+
+  if (cekBahaya(teks)) {
+    let peran = document.getElementById('pilihPeran').value;
+    let nama = namaUser || "Kamu";
+    let pesan = peran === "mahasiswa"
+      ? `🚨 ${nama}, aku khawatir banget sama kamu. Kamu gak sendiri ya. Yuk langsung ke konselor kampus: ${NAMA_KONSELOR_KAMPUS} - <a href="https://wa.me/${WA_KONSELOR_KAMPUS}" target="_blank">Chat Konselor</a> / Hotline: ${HOTLINE_KAMU}`
+      : peran === "siswa"
+      ? `🚨 ${nama}, aku khawatir banget sama kamu. Yuk langsung ke Guru BK: ${NAMA_GURU_BK} - <a href="https://wa.me/${WA_GURU_BK}" target="_blank">Chat Guru BK</a> / Hotline: ${HOTLINE_KAMU}`
       : `🚨 Aku khawatir banget sama kamu. Pilih dulu di atas kamu siswa/mahasiswa ya, biar aku arahin ke orang yang tepat. Hotline: ${HOTLINE_KAMU}`;
     tambahBubble(pesan, "bot");
     simpanKeDatabase(teks, "DARURAT", "BERBAHAYA");
     return;
   }
 
-  if (teks.toLowerCase().includes("namaku") || teks.toLowerCase().includes("nama ku")) {
-    let kata = teks.replace(/namaku|nama ku/gi, "").trim().split(" ");
-    let n = kata[kata.length - 1] || "";
-    if (n.length >= 2) namaUser = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
-  }
-
-  let idKetik = "ketik-" + Date.now();
-  document.getElementById('chatBox').innerHTML += `<div class="bubble-bot" id="${idKetik}">💬 lagi mikir...</div>`;
-  document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
-
-  let balasan = await tanyaAI(teks);
-  document.getElementById(idKetik)?.remove();
-  tambahBubble(balasan, "bot");
-  simpanKeDatabase(teks, balasan, "aman");
+  let balasan = buatBalasan(teks);
+  setTimeout(() => {
+    tambahBubble(balasan, "bot");
+    simpanKeDatabase(teks, balasan, "aman");
+  }, 400);
 }
 
-async function tanyaAI(teksUser) {
-  riwayatChat.push({ role: "user", parts: [{ text: teksUser }] });
-  if (riwayatChat.length > 10) riwayatChat = riwayatChat.slice(-10);
-  let peran = document.getElementById('pilihPeran').value || "remaja";
-  let infoNama = namaUser ? `Nama user: ${namaUser}, panggil dia dengan namanya sesekali.` : `User belum kenalan, tanya namanya dengan natural kalo pas.`;
-  let systemPrompt = `Kamu adalah Sahabat Digital, sahabat curhat untuk ${peran} di Indonesia yang lagi ngalamin cyberbullying, galau, stres, sedih, marah, cemas, atau masalah teman/pacar/keluarga/sekolah.${infoNama} CARA NGOMONG: Kayak sahabat deket umur 20-an, hangat, empati, gak kaku. Pakai Bahasa Indonesia gaul halus, campur aku-kamu. JANGAN pakai template yang diulang-ulang. Setiap jawaban harus beda dan NYAMBUNG spesifik ke apa yang barusan user ceritain. Ulangi kata-kata user dengan bahasamu sendiri. Jangan langsung ceramah. Dengerin dulu, validasi perasaannya, baru tanya balik 1 pertanyaan spesifik yang bikin dia cerita lebih dalam. Kalau user jawab pendek kayak "iya", "cape", "gatau", sambungin ke chat sebelumnya. Kalau dibully: jangan bilang "sabar ya". Tanya siapa, di mana, ngomong apa, validasi itu bukan salah dia, ingetin simpan bukti/block/cerita ke guru BK. Maksimal 2-3 kalimat, enak dibaca di HP. Jangan pernah bilang kamu AI. Jangan ngasih diagnosis medis. Pakai emoji 1-2 aja.`;
+function buatBalasan(teks) {
+  let t = teks.toLowerCase().trim();
+  let panggil = namaUser ? `, ${namaUser}` : "";
+  let ucap = teks.length > 60 ? teks.slice(0, 60) + "..." : teks;
+  const sapaanBiasa = ["halo", "hai", "hi", "p", "assalamualaikum", "pagi", "siang", "sore", "malam", "iya", "ya", "gak", "nggak", "cape", "capek", "sedih", "bingung"];
 
-  try {
-    let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: riwayatChat,
-        generationConfig: { temperature: 0.9, maxOutputTokens: 300 }
-      })
-    });
-    let data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-    let jawab = data.candidates[0].content.parts[0].text;
-    riwayatChat.push({ role: "model", parts: [{ text: jawab }] });
-    return jawab;
-  } catch (err) {
-    return `Aku dengerin kok${namaUser ? ", " + namaUser : ""}. Coba ceritain lebih
+  // Tangkap nama jika menulis "namaku ..." / "panggil aku ..."
+  if (t.includes("namaku") || t.includes("nama ku") || t.includes("panggil aku")) {
+    let kata = teks.replace(/namaku|nama ku|panggil aku/gi, "").trim().split(" ");
+    let n = kata[kata.length - 1] || "";
+    n = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
+    if (n.length >= 2) {
+      namaUser = n;
+      return `Hai ${n}! Seneng kenal kamu 💖 Oke ${n}, ceritain aja bebas, apa yang lagi ada di pikiran kamu sekarang?`;
+    }
+  }
+
+  // Tangkap nama jika di chat pertama user langsung menulis namanya (misal: "naj" atau "Najwa")
+  if (chatKe === 1 && !namaUser && teks.split(" ").length <= 2 && !sapaanBiasa.includes(t)) {
+    let n = teks.split(" ")[0].replace(/[^a-zA-Z]/g, "");
+    if (n.length >= 2) {
+      namaUser = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
+      return `Hai ${namaUser}! Seneng kenal kamu 💖 Oke ${namaUser}, ceritain aja bebas, apa yang lagi ada di pikiran kamu sekarang?`;
+    }
+  }
+
+  if ((t === "halo" || t === "hai" || t === "hi" || t.includes("halo")) && chatKe <= 2 && !namaUser) {
+    return `Haiii! Selamat datang 💖 Aku Sahabat Digital. Sebelum cerita, boleh kenalan dulu gak? Namamu siapa?`;
+  }
+
+  if (teks.length <= 12) {
+    if (t === "iya" || t === "ya" || t === "hehe" || t === "hmm" || t === "oke" || t === "iya sih" || t === "bener" || t === "banget") {
+      if (omonganSebelumnya) return `Iya ya${panggil}, jadi pas kamu bilang "${omonganSebelumnya}" tadi itu, yang paling kerasa tuh apanya? Yang di badan, di pikiran, atau di hati?`;
+      return `Iya${panggil}, aku dengerin kok. Coba ceritain 1 kalimat lagi, yang paling jujur, apa yang bikin kamu ngerasa gitu?`;
+    }
+    if (t === "gak" || t === "nggak" || t === "ga" || t === "tidak" || t === "gatau" || t === "gak tau" || t === "bingung") {
+      return `Wajar kok kalo masih bingung${panggil}. Coba gini aja, dari yang kamu ceritain tadi "${omonganSebelumnya || ucap}", bagian mana yang paling bikin kamu kepikiran sampe sekarang?`;
+    }
+    if (t === "cape" || t === "capek" || t === "lelah") {
+      return `Cape ya${panggil}... cape yang gimana? Cape badannya kayak habis ngapa-ngapain terus, atau cape pikirannya karena kebanyakan mikir? Ceritain deh, hari ini kamu ngapain aja sampe cape gitu?`;
+    }
+    return `Oke${panggil}, kamu bilang "${ucap}". Boleh ceritain lebih panjang dikit? Kejadiannya gimana, terus kamu ngerasanya gimana pas itu?`;
+  }
+
+  let perasaan = "";
+  if (t.includes("cape") || t.includes("lelah") || t.includes("pusing")) perasaan = "cape";
+  else if (t.includes("sedih") || t.includes("nangis") || t.includes("down") || t.includes("sepi") || t.includes("sendiri")) perasaan = "sedih";
+  else if (t.includes("marah") || t.includes("kesel") || t.includes("sebel") || t.includes("benci") || t.includes("jengkel")) perasaan = "marah";
+  else if (t.includes("takut") || t.includes("cemas") || t.includes("khawatir") || t.includes("panik") || t.includes("overthinking") || t.includes("gak bisa tidur")) perasaan = "cemas";
+  else if (t.includes("bingung") || t.includes("galau") || t.includes("gatau") || t.includes("gak tau")) perasaan = "bingung";
+  else if (t.includes("senang") || t.includes("seneng") || t.includes("happy") || t.includes("lega")) perasaan = "senang";
+  else if (t.includes("bully") || t.includes("dibully") || t.includes
