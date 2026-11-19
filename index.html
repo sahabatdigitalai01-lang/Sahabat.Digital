@@ -3,223 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sahabat Digital - Anti Cyberbullying</title>
+  <meta name="theme-color" content="#4d7c6f">
+  <title>Sahabat Digital - Teman Curhat &amp; Literasi Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
-  <style>
-    *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-    body{margin:0;background:#fdf6f0;padding:10px}
-    .kotak{max-width:650px;margin:auto;background:white;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}
-    .header{background:#0f5b4d;color:white;text-align:center;padding:25px 15px}
-    .header h1{margin:0;font-size:24px}
-    .header p{margin:5px 0 15px;opacity:.9;font-size:14px}
-    .header select{padding:10px 15px;border-radius:20px;border:none;width:90%;max-width:320px;font-size:14px}
-    .btn-notif{margin-top:10px;padding:8px 16px;border-radius:20px;border:none;background:#ffffff;color:#0f5b4d;font-weight:bold;font-size:13px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15)}
-    .materi{padding:15px}
-    .materi h3{margin:0 0 10px}
-    .grid{display:flex;gap:10px;flex-wrap:wrap}
-    .kartu{flex:1;min-width:140px;background:#fff7f0;border:1px solid #ffe4d1;padding:12px;border-radius:12px;cursor:pointer;text-align:center;font-size:13px}
-    #chatBox{height:380px;overflow-y:auto;padding:15px;background:#fffaf7;display:flex;flex-direction:column;gap:10px}
-    .bubble-bot{background:#f1ece6;padding:10px 14px;border-radius:15px;max-width:85%;align-self:flex-start;line-height:1.5;font-size:14px}
-    .bubble-user{background:#0f5b4d;color:white;padding:10px 14px;border-radius:15px;max-width:85%;align-self:flex-end;font-size:14px}
-    .input-area{display:flex;gap:8px;padding:12px;border-top:1px solid #eee}
-    .input-area input{flex:1;padding:12px;border:1px solid #ddd;border-radius:25px;outline:none}
-    .input-area button{background:#0f5b4d;color:white;border:none;padding:0 20px;border-radius:25px;cursor:pointer;font-weight:bold}
-    #notifPopup{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:white;box-shadow:0 5px 20px rgba(0,0,0,.25);padding:14px;border-radius:14px;width:92%;max-width:420px;z-index:99}
-    .hidden{display:none !important}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:15px}
-    .modal>div{background:white;padding:20px;border-radius:16px;max-width:450px;width:100%}
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="kotak">
-  <div class="header">
-    <h1>💬 Sahabat Digital</h1>
-    <p>Kamu tidak sendiri. Cerita aja, aman & rahasia.</p>
-    <select id="pilihPeran">
-      <option value="">Kamu siapa? Pilih dulu...</option>
-      <option value="siswa">Siswa (SMP/SMA)</option>
-      <option value="mahasiswa">Mahasiswa</option>
-    </select>
-    <br>
-    <button id="btnNotif" class="btn-notif" onclick="aktifkanNotifManual()">🔔 Aktifkan Pengingat</button>
-  </div>
-  <div class="materi">
-    <h3>📚 Materi Hari Ini</h3>
-    <div class="grid">
-      <div class="kartu" onclick="bukaMateri('cyberbullying')">📱<br>Apa itu Cyberbullying?</div>
-      <div class="kartu" onclick="bukaMateri('cara-hadapi')">🛡️<br>Cara Hadapi Bully Online</div>
-      <div class="kartu" onclick="bukaMateri('selflove')">💖<br>Self Love & Tenang</div>
+
+  <div id="notifPopup" class="notif-popup hidden">
+    <span>🔔</span>
+    <div>
+      <b id="notifTitle">Sahabat Digital</b>
+      <p id="notifText">Ada yang ingin kamu ceritakan hari ini?</p>
+      <button type="button" onclick="bukaMateriDariNotif()">Baca Materi ➜</button>
+      <button type="button" onclick="tutupNotif()">Nanti</button>
     </div>
   </div>
-  <div id="chatBox"></div>
+
+  <header>
+    <h1>💬 Sahabat Digital</h1>
+    <p>Kamu tidak sendiri. Cerita aja di Sahabat Digital, aman &amp; rahasia.</p>
+    <select id="pilihPeran" aria-label="Pilih Peran">
+      <option value="">Kamu siapa? Pilih dulu...</option>
+      <option value="siswa">Saya Siswa SMA</option>
+      <option value="mahasiswa">Saya Mahasiswa</option>
+    </select>
+  </header>
+
+  <div class="reminder-bar" aria-label="Pengingat Notifikasi">
+    <div class="reminder-info">
+      <strong id="statusPengingatTitle">🔔 Aktifkan Notifikasi</strong>
+      <span id="statusPengingatText">Aktifkan notifikasi untuk menerima pengingat.</span>
+    </div>
+    <button type="button" id="btnAktifkanPengingat" class="btn-reminder" onclick="aktifkanPengingatManual()">
+      Aktifkan Notifikasi
+    </button>
+  </div>
+
+  <section>
+    <h2>📚 Materi Hari Ini</h2>
+    <div class="materi-grid">
+      <button type="button" class="card" onclick="bukaMateri('cyberbullying')">📱 Cyberbullying</button>
+      <button type="button" class="card" onclick="bukaMateri('fomo')">🌀 FOMO</button>
+      <button type="button" class="card" onclick="bukaMateri('keamanan-data')">🔐 Keamanan Data Digital</button>
+    </div>
+  </section>
+
+  <main id="chatBox" aria-live="polite"></main>
+
   <div class="input-area">
-    <input id="inputChat" placeholder="Cerita apa aja di sini..." onkeypress="if(event.key==='Enter') kirimChat()">
-    <button onclick="kirimChat()">Kirim</button>
+    <input
+      type="text"
+      id="inputChat"
+      placeholder="Tulis curhatan kamu untuk Sahabat Digital..."
+      onkeypress="if(event.key==='Enter') kirimChat()"
+    >
+    <button type="button" onclick="kirimChat()">Kirim</button>
   </div>
-</div>
 
-<div id="notifPopup" class="hidden">
-  <b id="notifTitle"></b><p id="notifText" style="margin:5px 0"></p>
-  <button onclick="bukaMateriDariNotif()">Baca Materi</button>
-  <button onclick="tutupNotif()">Tutup</button>
-</div>
-
-<div id="modalMateri" class="modal hidden" onclick="if(event.target.id==='modalMateri') tutupMateri()">
-  <div>
-    <h3 id="judulMateri"></h3>
-    <p id="isiMateri" style="line-height:1.6"></p>
-    <button onclick="tutupMateri()">Tutup</button>
+  <div id="modalMateri" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="judulMateri">
+    <div class="modal-content">
+      <button type="button" onclick="tutupMateri()" class="close-btn">✕ TUTUP</button>
+      <h2 id="judulMateri"></h2>
+      <p id="isiMateri"></p>
+    </div>
   </div>
-</div>
 
-<script>
-const HOTLINE_KAMU = "GANTI_NOMOR_HOTLINE";
-const NAMA_KONSELOR_KAMPUS = "Konselor Kampus";
-const WA_KONSELOR_KAMPUS = "62812xxxx";
-const NAMA_GURU_BK = "Guru BK";
-const WA_GURU_BK = "62812xxxx";
-
-let namaUser = "";
-let chatKe = 0;
-let omonganTerakhir = "";
-let omonganSebelumnya = "";
-let sudahTanyaKapan = false;
-let sudahTanyaTerberat = false;
-let sudahTanyaMauApa = false;
-
-function tambahBubble(teks, siapa) {
-  let box = document.getElementById('chatBox');
-  box.innerHTML += `<div class="${siapa === "bot" ? "bubble-bot" : "bubble-user"}">${teks}</div>`;
-  box.scrollTop = box.scrollHeight;
-}
-
-function simpanKeDatabase(pesan, balasan, status) {
-  let data = JSON.parse(localStorage.getItem('database_curhat') || "[]");
-  data.push({
-    waktu: new Date().toLocaleString('id-ID'),
-    peran: document.getElementById('pilihPeran').value || "-",
-    nama: namaUser,
-    pesan,
-    balasan,
-    status
-  });
-  localStorage.setItem('database_curhat', JSON.stringify(data));
-}
-
-const daftarNotif = [
-  { judul: "📱 Cyberbullying itu nyata loh", text: "Kata-kata di chat bisa nyakitin sama kayak pukulan.", materi: "cyberbullying" },
-  { judul: "💖 Kamu berharga", text: "Hari ini ada yang bikin kamu down? Cerita yuk.", materi: "selflove" },
-  { judul: "🛡️ Dibully di grup? Jangan diam!", text: "Screenshot, block, lapor. Kamu punya hak aman.", materi: "cara-hadapi" },
-];
-
-let notifTerakhir = "";
-function munculNotif() {
-  let acak = daftarNotif[Math.floor(Math.random() * daftarNotif.length)];
-  notifTerakhir = acak.materi;
-  document.getElementById('notifTitle').innerText = acak.judul;
-  document.getElementById('notifText').innerText = acak.text;
-  document.getElementById('notifPopup').classList.remove('hidden');
-}
-setTimeout(munculNotif, 4000);
-function tutupNotif() { document.getElementById('notifPopup').classList.add('hidden'); }
-function bukaMateriDariNotif() { tutupNotif(); bukaMateri(notifTerakhir); }
-
-const dataMateri = {
-  "cyberbullying": { judul: "📱 Apa itu Cyberbullying?", isi: "Cyberbullying adalah perundungan lewat HP/internet: dihina di komentar, disebar foto aib, dikucilkan dari grup, diancam lewat DM. Ini BUKAN bercanda. Langkah pertama: jangan balas emosi, screenshot bukti, block pelaku, cerita ke orang dewasa yang kamu percaya." },
-  "cara-hadapi": { judul: "🛡️ Cara Hadapi Bully Online", isi: "1. JANGAN dibalas marah. 2. SCREENSHOT bukti. 3. BLOCK & REPORT. 4. CERITA ke Guru BK / Konselor. 5. Istirahat dari sosmed 1-2 hari. Kamu berhak aman." },
-  "selflove": { judul: "💖 Self Love & Tenang", isi: "Tarik napas 4 detik, tahan 7 detik, buang 8 detik. Ulangi 3x. Minum air, jauhkan HP 10 menit, dengerin lagu yang kamu suka." }
-};
-
-function bukaMateri(k) {
-  document.getElementById('judulMateri').innerText = dataMateri[k].judul;
-  document.getElementById('isiMateri').innerText = dataMateri[k].isi;
-  document.getElementById('modalMateri').classList.remove('hidden');
-}
-function tutupMateri() { document.getElementById('modalMateri').classList.add('hidden'); }
-
-const kataBahaya = ["bunuh diri", "pengen mati", "mau mati", "lukai diri", "self harm", "cutting", "gak mau hidup", "pengen hilang", "mau ngakhiri"];
-function cekBahaya(t) { return kataBahaya.some(k => t.toLowerCase().includes(k)); }
-
-function kirimChat() {
-  let input = document.getElementById('inputChat');
-  let teks = input.value.trim();
-  if (!teks) return;
-  tambahBubble(teks, "user");
-  input.value = "";
-  chatKe++;
-  omonganSebelumnya = omonganTerakhir;
-  omonganTerakhir = teks;
-  resetTimerDiem();
-
-  if (cekBahaya(teks)) {
-    let peran = document.getElementById('pilihPeran').value;
-    let nama = namaUser || "Kamu";
-    let pesan = peran === "mahasiswa"
-      ? `🚨 ${nama}, aku khawatir banget sama kamu. Kamu gak sendiri ya. Yuk langsung ke konselor kampus: ${NAMA_KONSELOR_KAMPUS} - <a href="https://wa.me/${WA_KONSELOR_KAMPUS}" target="_blank">Chat Konselor</a> / Hotline: ${HOTLINE_KAMU}`
-      : peran === "siswa"
-      ? `🚨 ${nama}, aku khawatir banget sama kamu. Yuk langsung ke Guru BK: ${NAMA_GURU_BK} - <a href="https://wa.me/${WA_GURU_BK}" target="_blank">Chat Guru BK</a> / Hotline: ${HOTLINE_KAMU}`
-      : `🚨 Aku khawatir banget sama kamu. Pilih dulu di atas kamu siswa/mahasiswa ya, biar aku arahin ke orang yang tepat. Hotline: ${HOTLINE_KAMU}`;
-    tambahBubble(pesan, "bot");
-    simpanKeDatabase(teks, "DARURAT", "BERBAHAYA");
-    return;
-  }
-
-  let balasan = buatBalasan(teks);
-  setTimeout(() => {
-    tambahBubble(balasan, "bot");
-    simpanKeDatabase(teks, balasan, "aman");
-  }, 400);
-}
-
-function buatBalasan(teks) {
-  let t = teks.toLowerCase().trim();
-  let panggil = namaUser ? `, ${namaUser}` : "";
-  let ucap = teks.length > 60 ? teks.slice(0, 60) + "..." : teks;
-  const sapaanBiasa = ["halo", "hai", "hi", "p", "assalamualaikum", "pagi", "siang", "sore", "malam", "iya", "ya", "gak", "nggak", "cape", "capek", "sedih", "bingung"];
-
-  // Tangkap nama jika menulis "namaku ..." / "panggil aku ..."
-  if (t.includes("namaku") || t.includes("nama ku") || t.includes("panggil aku")) {
-    let kata = teks.replace(/namaku|nama ku|panggil aku/gi, "").trim().split(" ");
-    let n = kata[kata.length - 1] || "";
-    n = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
-    if (n.length >= 2) {
-      namaUser = n;
-      return `Hai ${n}! Seneng kenal kamu 💖 Oke ${n}, ceritain aja bebas, apa yang lagi ada di pikiran kamu sekarang?`;
-    }
-  }
-
-  // Tangkap nama jika di chat pertama user langsung menulis namanya (misal: "naj" atau "Najwa")
-  if (chatKe === 1 && !namaUser && teks.split(" ").length <= 2 && !sapaanBiasa.includes(t)) {
-    let n = teks.split(" ")[0].replace(/[^a-zA-Z]/g, "");
-    if (n.length >= 2) {
-      namaUser = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
-      return `Hai ${namaUser}! Seneng kenal kamu 💖 Oke ${namaUser}, ceritain aja bebas, apa yang lagi ada di pikiran kamu sekarang?`;
-    }
-  }
-
-  if ((t === "halo" || t === "hai" || t === "hi" || t.includes("halo")) && chatKe <= 2 && !namaUser) {
-    return `Haiii! Selamat datang 💖 Aku Sahabat Digital. Sebelum cerita, boleh kenalan dulu gak? Namamu siapa?`;
-  }
-
-  if (teks.length <= 12) {
-    if (t === "iya" || t === "ya" || t === "hehe" || t === "hmm" || t === "oke" || t === "iya sih" || t === "bener" || t === "banget") {
-      if (omonganSebelumnya) return `Iya ya${panggil}, jadi pas kamu bilang "${omonganSebelumnya}" tadi itu, yang paling kerasa tuh apanya? Yang di badan, di pikiran, atau di hati?`;
-      return `Iya${panggil}, aku dengerin kok. Coba ceritain 1 kalimat lagi, yang paling jujur, apa yang bikin kamu ngerasa gitu?`;
-    }
-    if (t === "gak" || t === "nggak" || t === "ga" || t === "tidak" || t === "gatau" || t === "gak tau" || t === "bingung") {
-      return `Wajar kok kalo masih bingung${panggil}. Coba gini aja, dari yang kamu ceritain tadi "${omonganSebelumnya || ucap}", bagian mana yang paling bikin kamu kepikiran sampe sekarang?`;
-    }
-    if (t === "cape" || t === "capek" || t === "lelah") {
-      return `Cape ya${panggil}... cape yang gimana? Cape badannya kayak habis ngapa-ngapain terus, atau cape pikirannya karena kebanyakan mikir? Ceritain deh, hari ini kamu ngapain aja sampe cape gitu?`;
-    }
-    return `Oke${panggil}, kamu bilang "${ucap}". Boleh ceritain lebih panjang dikit? Kejadiannya gimana, terus kamu ngerasanya gimana pas itu?`;
-  }
-
-  let perasaan = "";
-  if (t.includes("cape") || t.includes("lelah") || t.includes("pusing")) perasaan = "cape";
-  else if (t.includes("sedih") || t.includes("nangis") || t.includes("down") || t.includes("sepi") || t.includes("sendiri")) perasaan = "sedih";
-  else if (t.includes("marah") || t.includes("kesel") || t.includes("sebel") || t.includes("benci") || t.includes("jengkel")) perasaan = "marah";
-  else if (t.includes("takut") || t.includes("cemas") || t.includes("khawatir") || t.includes("panik") || t.includes("overthinking") || t.includes("gak bisa tidur")) perasaan = "cemas";
-  else if (t.includes("bingung") || t.includes("galau") || t.includes("gatau") || t.includes("gak tau")) perasaan = "bingung";
-  else if (t.includes("senang") || t.includes("seneng") || t.includes("happy") || t.includes("lega")) perasaan = "senang";
-  else if (t.includes("bully") || t.includes("dibully") || t.includes
+  <script src="app.js"></script>
+</body>
+</html>
