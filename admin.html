@@ -1,54 +1,238 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Database Pantauan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Pantauan &amp; Live Admin - Sahabat Digital</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { font-family: 'Poppins', sans-serif; }
-    body { padding: 20px; background: #f4f6f4; color: #1f2933; }
-    table { width: 100%; border-collapse: collapse; }
-    td, th { border: 1px solid #ccc; padding: 8px; background: white; }
-    .bahaya { background: #ffcccc; }
-    #kunci { max-width: 300px; margin: 100px auto; text-align: center; background: white; padding: 20px; border-radius: 15px; }
-    #kunci input { padding: 10px; width: 90%; border-radius: 10px; border: 1px solid #ccc; }
-    #kunci button { padding: 10px 20px; background: #4d7c6f; color: white; border: none; border-radius: 10px; margin-top: 10px; cursor: pointer; }
+    * { font-family: 'Poppins', sans-serif; box-sizing: border-box; }
+    body { padding: 20px; background: #f4f6f4; color: #1f2933; margin: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+    td, th { border: 1px solid #ccc; padding: 10px; background: #ffffff; text-align: left; vertical-align: top; }
+    th { background: #4d7c6f; color: #ffffff; }
+    .bahaya td { background: #ffe5e5; }
+    #kunci { max-width: 350px; margin: 100px auto; text-align: center; background: #ffffff; padding: 25px; border-radius: 18px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
+    .pass-group { display: flex; align-items: stretch; gap: 6px; margin-top: 10px; }
+    .pass-group input { flex: 1; padding: 10px 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 13px; outline: none; }
+    .btn-lihat-pw { padding: 0 12px; border-radius: 10px; border: 1px solid #cfd8d3; background: #eef3f0; color: #1f2933; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .btn-lihat-pw:hover { background: #dde7e1; }
+    #kunci button.btn-masuk, .btn-aksi { padding: 10px 18px; background: #4d7c6f; color: #ffffff; border: none; border-radius: 10px; margin-top: 12px; cursor: pointer; font-weight: 600; }
+    .btn-hapus { background: #c0392b; margin-left: 6px; }
+    .balas-box { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+    .balas-row { display: flex; gap: 6px; }
+    .balas-row input { flex: 1; padding: 7px 9px; border: 1px solid #ccc; border-radius: 8px; font-size: 12px; }
+    .btn-kirim-admin { padding: 7px 12px; background: #27ae60; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .btn-tahan-ai { padding: 6px 10px; background: #d97706; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; font-size: 11.5px; font-weight: 600; width: fit-content; }
+    .btn-tahan-ai.aktif { background: #3b6358; }
+    .badge-tahan { display: inline-block; margin-top: 4px; font-size: 11px; color: #b45309; font-weight: 600; }
+    .countdown-ai { display: inline-block; margin-top: 4px; font-size: 11px; color: #0f766e; font-weight: 600; }
   </style>
 </head>
 <body>
+
 <div id="kunci">
   <h2>🔒 Khusus Admin</h2>
-  <p>Masukin password dulu</p>
-  <input type="password" id="inputPass" placeholder="Password...">
-  <br><button onclick="cekPass()">Buka Database</button>
-  <p id="pesanSalah" style="color:red"></p>
+  <p style="font-size:13px; color:#555;">Masukkan password admin</p>
+  <div class="pass-group">
+    <input type="password" id="inputPass" placeholder="Password..." onkeypress="if(event.key==='Enter') cekPass()">
+    <button type="button" id="btnTogglePw" class="btn-lihat-pw" onclick="toggleLihatPassword()">Lihat</button>
+  </div>
+  <br><button type="button" class="btn-masuk" onclick="cekPass()">Buka Database</button>
+  <p id="pesanSalah" style="color:#c0392b; font-size:13px; margin-top:8px;"></p>
 </div>
+
 <div id="isiDatabase" style="display:none;">
-  <h2>📊 Database Curhatan</h2>
-  <button onclick="downloadCSV()">Download Excel / CSV</button>
-  <button onclick="if(confirm('Hapus semua?')){localStorage.removeItem('database_curhat'); location.reload()}">Hapus Semua</button>
+  <h2>📊 Panel Live Pantauan &amp; Balasan Admin - Sahabat Digital</h2>
+  <button type="button" class="btn-aksi" onclick="downloadCSV()">Download Excel / CSV</button>
+  <button type="button" class="btn-aksi btn-hapus" onclick="if(confirm('Yakin hapus semua riwayat?')){localStorage.removeItem('database_curhat'); location.reload();}">Hapus Semua</button>
   <table>
-    <thead><tr><th>Waktu</th><th>Peran</th><th>Nama</th><th>Pesan</th><th>Balasan</th><th>Status</th></tr></thead>
+    <thead>
+      <tr>
+        <th>Waktu</th>
+        <th>Peran</th>
+        <th>Nama</th>
+        <th>Pesan Konseli</th>
+        <th>Balasan Terakhir (Catatan Admin)</th>
+        <th>Status</th>
+        <th>Aksi Admin &amp; Kontrol AI</th>
+      </tr>
+    </thead>
     <tbody id="isiTabel"></tbody>
   </table>
 </div>
+
 <script>
-const PASSWORD_KAMU = "tiwi123";
-function cekPass(){
-  if(document.getElementById('inputPass').value === PASSWORD_KAMU){
-    document.getElementById('kunci').style.display='none';
-    document.getElementById('isiDatabase').style.display='block';
-    let data = JSON.parse(localStorage.getItem('database_curhat') || "[]");
-    document.getElementById('isiTabel').innerHTML = data.map(d=>`<tr class="${d.status.includes('BERBAHAYA')?'bahaya':''}"><td>${d.waktu}</td><td>${d.peran}</td><td>${d.nama||'-'}</td><td>${d.pesan}</td><td>${d.balasan}</td><td><b>${d.status}</b></td></tr>`).join('');
-  } else { document.getElementById('pesanSalah').innerText = "Password salah!"; }
+const PASSWORD_KAMU = "sahabatdigital";
+
+function toggleLihatPassword() {
+  const inputPw = document.getElementById("inputPass");
+  const btnPw = document.getElementById("btnTogglePw");
+  if (!inputPw || !btnPw) return;
+
+  if (inputPw.type === "password") {
+    inputPw.type = "text";
+    btnPw.innerText = "Sembunyi";
+  } else {
+    inputPw.type = "password";
+    btnPw.innerText = "Lihat";
+  }
 }
-function downloadCSV(){
-  let data = JSON.parse(localStorage.getItem('database_curhat') || "[]");
-  let csv = "Waktu,Peran,Nama,Pesan,Balasan,Status\n" + data.map(d=>`"${d.waktu}","${d.peran}","${d.nama}","${d.pesan}","${d.balasan}","${d.status}"`).join("\n");
-  let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv])); a.download='database-curhat.csv'; a.click();
+
+function cekPass() {
+  if (document.getElementById("inputPass").value === PASSWORD_KAMU) {
+    document.getElementById("kunci").style.display = "none";
+    document.getElementById("isiDatabase").style.display = "block";
+    muatTabel();
+  } else {
+    document.getElementById("pesanSalah").innerText = "Password salah!";
+  }
 }
+
+function adminSedangMengetik() {
+  const aktif = document.activeElement;
+  if (!aktif || !aktif.id || !aktif.id.startsWith("inputBalas-")) return false;
+  return true;
+}
+
+function formatHitungMundurAI(item) {
+  if (!item || item.tahanAI) return "";
+  if (!item.aiBerpikirSampai || item.balasan !== "-") return "";
+  const sisaDetik = Math.max(0, Math.ceil((item.aiBerpikirSampai - Date.now()) / 1000));
+  if (sisaDetik <= 0) return "";
+  return `⏳ AI akan menjawab dalam ${sisaDetik}d`;
+}
+
+function muatTabel() {
+  const data = JSON.parse(localStorage.getItem("database_curhat") || "[]");
+  const tbody = document.getElementById("isiTabel");
+  if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Belum ada riwayat percakapan di Sahabat Digital.</td></tr>`;
+    return;
+  }
+
+  const draftKetikan = {};
+  data.forEach((_, idx) => {
+    const el = document.getElementById(`inputBalas-${idx}`);
+    if (el && el.value) draftKetikan[idx] = el.value;
+  });
+
+  tbody.innerHTML = data.map((d, index) => {
+    const sedangDitahan = Boolean(d.tahanAI);
+    const infoMundur = formatHitungMundurAI(d);
+    const statusTampil = infoMundur
+      ? `${d.status || "sedang menyiapkan balasan"} (${Math.max(0, Math.ceil((d.aiBerpikirSampai - Date.now()) / 1000))}d)`
+      : (d.status || (sedangDitahan ? "sedang menyiapkan balasan" : "aman"));
+
+    return `
+      <tr class="${(d.status || "").includes("BERBAHAYA") ? "bahaya" : ""}">
+        <td>${d.waktu || "-"}</td>
+        <td>${d.peran || "-"}</td>
+        <td>${d.nama || "Anonim"}</td>
+        <td>${d.pesan || "-"}</td>
+        <td>
+          <b>[${d.pengirimBalasan || "AI"}]</b> ${d.balasan || "-"}
+          ${infoMundur ? `<br><span class="countdown-ai">${infoMundur}</span>` : ""}
+          ${sedangDitahan ? `<br><span class="badge-tahan">⏸️ sedang menyiapkan balasan</span>` : ""}
+        </td>
+        <td><b>${statusTampil}</b></td>
+        <td>
+          <div class="balas-box">
+            <button
+              type="button"
+              class="btn-tahan-ai ${sedangDitahan ? "aktif" : ""}"
+              onclick="toggleTahanAI(${index})"
+            >
+              ${sedangDitahan ? "▶ Lepas ke AI" : "⏸️ Tahan AI (Siapkan Balasan)"}
+            </button>
+            <div class="balas-row">
+              <input
+                type="text"
+                id="inputBalas-${index}"
+                placeholder="Ketik balasan..."
+                onfocus="toggleTahanAI(${index}, true)"
+                onkeypress="if(event.key==='Enter') kirimBalasanAdmin(${index})"
+              >
+              <button type="button" class="btn-kirim-admin" onclick="kirimBalasanAdmin(${index})">Kirim</button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  Object.keys(draftKetikan).forEach((idx) => {
+    const el = document.getElementById(`inputBalas-${idx}`);
+    if (el) el.value = draftKetikan[idx];
+  });
+}
+
+function toggleTahanAI(index, paksaAktif = false) {
+  const data = JSON.parse(localStorage.getItem("database_curhat") || "[]");
+  if (!data[index]) return;
+
+  if (paksaAktif) {
+    data[index].tahanAI = true;
+    data[index].aiBerpikirSampai = 0;
+    if (data[index].balasan === "-") {
+      data[index].status = "sedang menyiapkan balasan";
+    }
+  } else {
+    const nilaiBaru = !Boolean(data[index].tahanAI);
+    data[index].tahanAI = nilaiBaru;
+    if (nilaiBaru) {
+      data[index].aiBerpikirSampai = 0;
+    }
+    if (data[index].balasan === "-") {
+      data[index].status = nilaiBaru ? "sedang menyiapkan balasan" : "aman";
+    }
+  }
+
+  localStorage.setItem("database_curhat", JSON.stringify(data));
+  if (!paksaAktif) muatTabel();
+}
+
+function kirimBalasanAdmin(index) {
+  const inputEl = document.getElementById(`inputBalas-${index}`);
+  if (!inputEl) return;
+  const inputVal = inputEl.value.trim();
+  if (!inputVal) return;
+
+  const data = JSON.parse(localStorage.getItem("database_curhat") || "[]");
+  if (!data[index]) return;
+
+  data[index].balasan = inputVal;
+  data[index].pengirimBalasan = "Admin";
+  data[index].balasanAdminTimestamp = Date.now();
+  data[index].tahanAI = false;
+  data[index].aiBerpikirSampai = 0;
+  data[index].status = "aman";
+  localStorage.setItem("database_curhat", JSON.stringify(data));
+  inputEl.value = "";
+
+  alert("Balasan berhasil dikirim!");
+  muatTabel();
+}
+
+function downloadCSV() {
+  const data = JSON.parse(localStorage.getItem("database_curhat") || "[]");
+  const csv = "Waktu,Peran,Nama,Pesan,Balasan,Pengirim,Status\n" + data.map((d) =>
+    `"${(d.waktu || "").replace(/"/g, '""')}","${(d.peran || "").replace(/"/g, '""')}","${(d.nama || "").replace(/"/g, '""')}","${(d.pesan || "").replace(/"/g, '""')}","${(d.balasan || "").replace(/"/g, '""')}","${(d.pengirimBalasan || "AI")}","${(d.status || "").replace(/"/g, '""')}"`
+  ).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+  a.download = "database-sahabat-digital.csv";
+  a.click();
+}
+
+setInterval(() => {
+  if (document.getElementById("isiDatabase").style.display === "block" && !adminSedangMengetik()) {
+    muatTabel();
+  }
+}, 1000);
 </script>
+
 </body>
 </html>
