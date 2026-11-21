@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4d7c6f">
+  <title>Sahabat Digital - Teman Curhat &amp; Literasi Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── Notif Popup (dalam web) ── -->
+  <div id="notifPopup" class="notif-popup hidden" role="alert" aria-live="assertive">
+    <span aria-hidden="true">🔔</span>
+    <div>
+      <b id="notifTitle">Sahabat Digital</b>
+      <p id="notifText">Ada yang ingin kamu ceritakan hari ini?</p>
+      <button type="button" onclick="bukaMateriDariNotif()">Baca Materi ➜</button>
+      <button type="button" onclick="tutupNotif()">Nanti</button>
+    </div>
+  </div>
+
+  <!-- ── Header ── -->
+  <header>
+    <h1>💬 Sahabat Digital</h1>
+    <p>Kamu tidak sendiri. Cerita aja di Sahabat Digital, aman &amp; rahasia.</p>
+    <select id="pilihPeran" aria-label="Pilih Peran">
+      <option value="">Kamu siapa? Pilih dulu...</option>
+      <option value="siswa">Saya Siswa SMA</option>
+      <option value="mahasiswa">Saya Mahasiswa</option>
+    </select>
+  </header>
+
+  <!-- ── Reminder Bar Notifikasi ── -->
+  <div class="reminder-bar" aria-label="Pengingat Notifikasi">
+    <div class="reminder-info">
+      <strong id="statusPengingatTitle">🔔 Aktifkan Notifikasi</strong>
+      <span id="statusPengingatText">Aktifkan notifikasi untuk menerima pengingat harian.</span>
+    </div>
+    <div class="reminder-actions">
+      <button type="button" id="btnAktifkanPengingat" class="btn-reminder" onclick="aktifkanPengingatManual()">
+        Aktifkan Notifikasi
+      </button>
+      <button type="button" id="btnTestNotif" class="btn-test-notif hidden" onclick="kirimNotifTest()" title="Kirim notifikasi test untuk demo">
+        🧪 Test
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Materi Edukasi ── -->
+  <section>
+    <h2>📚 Materi Hari Ini</h2>
+    <div class="materi-grid">
+      <button type="button" class="card" onclick="bukaMateri('cyberbullying')">📱 Cyberbullying</button>
+      <button type="button" class="card" onclick="bukaMateri('fomo')">🌀 FOMO</button>
+      <button type="button" class="card" onclick="bukaMateri('keamanan-data')">🔐 Keamanan Data Digital</button>
+    </div>
+  </section>
+
+  <!-- ── Chat Box ── -->
+  <main id="chatBox" aria-live="polite" aria-label="Area percakapan"></main>
+
+  <!-- ── Input Area ── -->
+  <div class="input-area">
+    <button type="button" class="btn-reset-chat" onclick="resetObrolan()" title="Reset Obrolan" aria-label="Reset Obrolan">
+      🔄
+    </button>
+    <input
+      type="text"
+      id="inputChat"
+      placeholder="Tulis curhatan kamu untuk Sahabat Digital..."
+      onkeypress="if(event.key==='Enter') kirimChat()"
+      autocomplete="off"
+      aria-label="Tulis pesan"
+    >
+    <button type="button" id="btnKirim" onclick="kirimChat()" aria-label="Kirim pesan">Kirim</button>
+  </div>
+
+  <!-- ── Modal Materi ── -->
+  <div id="modalMateri" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="judulMateri">
+    <div class="modal-content">
+      <button type="button" onclick="tutupMateri()" class="close-btn" aria-label="Tutup modal">✕ TUTUP</button>
+      <h2 id="judulMateri"></h2>
+      <p id="isiMateri"></p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
