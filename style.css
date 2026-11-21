@@ -1,0 +1,661 @@
+/* ============================================================
+   SAHABAT DIGITAL — style.css
+   Tema: Sage Green #4d7c6f | Bersih, Responsif (HP & Laptop)
+   ============================================================ */
+
+* {
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: #f4f6f4;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background: #f4f6f4;
+  color: #1f2933;
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 12px 14px calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+header {
+  width: 100%;
+  background: linear-gradient(135deg, #4d7c6f, #3b6358);
+  color: white;
+  padding: 20px 16px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(77, 124, 111, 0.2);
+}
+
+header h1 {
+  font-size: clamp(19px, 5vw, 23px);
+  font-weight: 700;
+}
+
+header p {
+  margin: 6px 0 14px;
+  font-size: clamp(12px, 3.3vw, 13.5px);
+  opacity: 0.92;
+  line-height: 1.4;
+}
+
+select {
+  width: 100%;
+  max-width: 100%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: none;
+  background: white;
+  color: #1f2933;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ── Reminder Bar ────────────────────────────────────────── */
+.reminder-bar {
+  margin-top: 12px;
+  background: #ffffff;
+  border: 1px solid #dce5e0;
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+}
+
+.reminder-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.reminder-info strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2933;
+}
+
+.reminder-info span {
+  font-size: 11.5px;
+  color: #52606d;
+  line-height: 1.35;
+}
+
+.reminder-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Tombol aktifkan notifikasi */
+.btn-reminder {
+  background: #d97706;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-reminder:hover:not(:disabled) {
+  background: #b45309;
+  transform: translateY(-1px);
+}
+
+.btn-reminder.aktif {
+  background: #198754;
+  color: #ffffff;
+}
+
+.btn-reminder.aktif:hover:not(:disabled) {
+  background: #157347;
+}
+
+.btn-reminder:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Tombol test notifikasi */
+.btn-test-notif {
+  background: #e2e8f0;
+  color: #374151;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.btn-test-notif:hover {
+  background: #cbd5e1;
+}
+
+/* ── Materi Section ──────────────────────────────────────── */
+section {
+  width: 100%;
+}
+
+section h2 {
+  font-size: clamp(14.5px, 4vw, 16px);
+  font-weight: 700;
+  margin: 16px 0 10px;
+  color: #1f2933;
+}
+
+.materi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.card {
+  min-width: 0;
+  width: 100%;
+  background: white;
+  border: none;
+  padding: 12px 8px;
+  border-radius: 16px;
+  text-align: center;
+  font-size: clamp(11px, 2.9vw, 12.5px);
+  font-weight: 600;
+  line-height: 1.35;
+  color: #1f2933;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 74px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(77, 124, 111, 0.15);
+}
+
+/* ── Chat Box ────────────────────────────────────────────── */
+#chatBox {
+  width: 100%;
+  flex: 1;
+  min-height: 240px;
+  max-height: 52vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  margin: 14px 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 3px 14px rgba(15, 23, 42, 0.05);
+  scroll-behavior: smooth;
+}
+
+/* Bubble bot (AI) */
+.bubble-bot {
+  background: #e7efe9;
+  color: #1f2933;
+  padding: 12px 15px;
+  border-radius: 18px 18px 18px 4px;
+  max-width: 85%;
+  font-size: 13px;
+  line-height: 1.55;
+  align-self: flex-start;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* Bubble user */
+.bubble-user {
+  background: #4d7c6f;
+  color: white;
+  padding: 12px 15px;
+  border-radius: 18px 18px 4px 18px;
+  max-width: 85%;
+  font-size: 13px;
+  line-height: 1.55;
+  align-self: flex-end;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* ── Typing Indicator ────────────────────────────────────── */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px !important;
+  background: #e7efe9 !important;
+  opacity: 0.85;
+}
+
+.typing-indicator small {
+  font-size: 11.5px;
+  color: #52606d;
+  font-style: italic;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.typing-dots span {
+  width: 7px;
+  height: 7px;
+  background: #4d7c6f;
+  border-radius: 50%;
+  display: inline-block;
+  animation: typingBounce 1.2s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: 0s; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+  30%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ── Kartu Eskalasi Darurat ──────────────────────────────── */
+.kartu-eskalasi {
+  background: linear-gradient(135deg, #fff5f5, #fff0f0);
+  border: 2px solid #fca5a5;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-top: 4px;
+  max-width: 90%;
+  align-self: flex-start;
+}
+
+.eskalasi-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: #b91c1c;
+  margin-bottom: 6px;
+}
+
+.eskalasi-pesan {
+  font-size: 12.5px;
+  color: #374151;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  white-space: normal;
+}
+
+.eskalasi-pilih-peran {
+  font-size: 12px;
+  color: #374151;
+  margin: 8px 0 6px;
+  font-weight: 500;
+}
+
+.eskalasi-tombol-grup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn-eskalasi {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  font-family: inherit;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.btn-eskalasi:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.btn-wa {
+  background: #22c55e;
+  color: white;
+}
+
+.btn-hotline {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-peran {
+  background: #4d7c6f;
+  color: white;
+}
+
+/* ── Input Area ──────────────────────────────────────────── */
+.input-area {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  background: white;
+  padding: 6px 6px 6px 6px;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07);
+}
+
+/* Tombol reset obrolan */
+.btn-reset-chat {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f1f5f4;
+  border-radius: 50%;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4d7c6f;
+  transition: background-color 0.15s, transform 0.1s;
+  margin-left: 2px;
+}
+
+.btn-reset-chat:hover {
+  background: #dde7e1;
+  transform: rotate(20deg);
+}
+
+.input-area input {
+  flex: 1 1 0%;
+  width: 0;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 8px 4px;
+  font-size: 13px;
+  color: #1f2933;
+  outline: none;
+}
+
+.input-area button#btnKirim {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  background: #4d7c6f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.input-area button#btnKirim:hover {
+  background: #3b6358;
+}
+
+.input-area button#btnKirim:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Notif Popup (dalam web) ─────────────────────────────── */
+.notif-popup {
+  position: fixed;
+  bottom: 14px;
+  left: 14px;
+  top: auto;
+  right: auto;
+  max-width: min(360px, calc(100vw - 28px));
+  margin: 0;
+  background: white;
+  border: 2px solid #4d7c6f;
+  border-radius: 16px;
+  padding: 12px 14px;
+  z-index: 99;
+  display: flex;
+  gap: 10px;
+  font-size: 12.5px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+  animation: slideUpFadeIn 0.3s ease;
+}
+
+@keyframes slideUpFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.notif-popup b {
+  display: block;
+  font-size: 13px;
+  color: #1f2933;
+  margin-bottom: 3px;
+}
+
+.notif-popup p {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+.notif-popup button {
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+  margin-right: 6px;
+  font-family: inherit;
+}
+
+.notif-popup button:first-of-type {
+  background: #4d7c6f;
+  color: white;
+}
+
+.notif-popup button:last-of-type {
+  background: #e6ece9;
+  color: #1f2933;
+}
+
+/* ── Modal Materi ────────────────────────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  line-height: 1.65;
+  font-size: 13.5px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: modalPop 0.25s ease;
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-content h2 {
+  margin-bottom: 10px;
+  padding-right: 75px;
+  font-size: 16px;
+}
+
+.modal-content p {
+  white-space: pre-wrap;
+  color: #374151;
+}
+
+.close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #4d7c6f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.15s;
+}
+
+.close-btn:hover { background: #3b6358; }
+
+/* ── Utility ─────────────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}
+
+/* ── Responsive: Mobile kecil ───────────────────────────── */
+@media (max-width: 520px) {
+  .reminder-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reminder-actions {
+    flex-direction: row;
+    justify-content: stretch;
+    gap: 6px;
+  }
+
+  .btn-reminder {
+    flex: 1;
+    text-align: center;
+  }
+
+  .btn-test-notif {
+    flex-shrink: 0;
+  }
+
+  .kartu-eskalasi {
+    max-width: 100%;
+  }
+}
+
+/* ── Responsive: Laptop / Tablet ────────────────────────── */
+@media (min-width: 768px) {
+  html {
+    background: #e4ebe6;
+    padding: 24px 16px;
+  }
+
+  body {
+    max-width: 720px;
+    min-height: calc(100vh - 48px);
+    padding: 26px 28px;
+    border-radius: 26px;
+    box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+  }
+
+  header {
+    padding: 28px 24px;
+    border-radius: 20px;
+  }
+
+  header h1 { font-size: 26px; }
+  header p  { font-size: 14.5px; margin: 8px 0 16px; }
+
+  select {
+    max-width: 420px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  section h2 {
+    font-size: 17px;
+    margin: 22px 0 12px;
+  }
+
+  .materi-grid { gap: 14px; }
+
+  .card {
+    padding: 16px 12px;
+    font-size: 13.5px;
+    min-height: 76px;
+  }
+
+  #chatBox {
+    min-height: 300px;
+    max-height: 420px;
+    padding: 18px;
+    margin: 18px 0 16px;
+  }
+
+  .input-area {
+    padding: 6px 6px 6px 10px;
+  }
+
+  .input-area input { font-size: 14px; }
+
+  .input-area button#btnKirim {
+    padding: 11px 24px;
+    font-size: 14px;
+  }
+}
